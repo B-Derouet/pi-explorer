@@ -6,26 +6,26 @@ import PropTypes from 'prop-types'
 import {withSpinner} from './shared/Spinner'
 import TimeSynchronisedFormattedRelative from './shared/TimeSynchronizedFormattedRelative'
 
-const LedgerRow = props => (
+const LedgerRow = properties => (
   <tr>
     <td>
-      <Link to={`/ledger/${props.sequence}`}>{props.sequence}</Link>
+      <Link to={`/ledger/${properties.sequence}`}>{properties.sequence}</Link>
     </td>
     <td>
-      {props.txCountSuccessful > 0 ? (
-        <Link to={`/ledger/${props.sequence}#txs-table`}>{props.txCountSuccessful}</Link>
+      {properties.txCountSuccessful > 0 ? (
+        <Link to={`/ledger/${properties.sequence}#txs-table`}>{properties.txCountSuccessful}</Link>
       ) : (
-        props.txCountSuccessful
-      )} 
-      {props.compact === false && (<span>{' '}successful</span>)} 
-       {' '}/ {props.txCountFailed} 
-       {props.compact === false && (<span>{' '}failed</span>)}
+        properties.txCountSuccessful
+      )}
+      {properties.compact === false && (<span>{' '}{properties.intl.formatMessage({id: 'operation.successful'})}</span>)}
+       {' '}/ {properties.txCountFailed}
+       {properties.compact === false && (<span>{' '}{properties.intl.formatMessage({id: 'operation.failed'})}</span>)}
     </td>
     <td>
-      <span title={props.time}>
+      <span title={properties.time}>
         <TimeSynchronisedFormattedRelative
-          initialNow={props.parentRenderTimestamp}
-          value={props.time}
+          initialNow={properties.parentRenderTimestamp}
+          value={properties.time}
         />
       </span>
     </td>
@@ -69,6 +69,7 @@ class LedgerTable extends React.PureComponent {
               time={ledger.time}
               txCountSuccessful={ledger.txCountSuccessful}
               txCountFailed={ledger.txCountFailed}
+              intl={this.props.intl}
             />
           ))}
         </tbody>

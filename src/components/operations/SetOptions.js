@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {FormattedMessage} from 'react-intl'
 import {StrKey} from 'stellar-sdk'
-import AccountLink from '../shared/AccountLink'
 import snakeCase from 'lodash/snakeCase'
+import AccountLink from '../shared/AccountLink'
 import {isPublicKey} from '../../lib/stellar/utils'
 import {shortHash} from '../../lib/utils'
 
@@ -20,61 +20,62 @@ const propTypes = {
   highThreshold: PropTypes.number,
 }
 
-const dotCase = str => snakeCase(str).replace('_', '.')
+const dotCase = string => snakeCase(string).replace('_', '.')
 
 const Option = ({msgId, value}) => {
   return (
     <FormattedMessage
       id={`operation.options.set.${msgId}`}
       values={{
-        value: value,
+        value,
       }}
     />
   )
 }
 
 const OptionValue = ({optKey, value}) => {
-  let valueEl = value
-  if (value instanceof Array) valueEl = value.join(', ')
-  else if (
+  let valueElement = value
+  if (Array.isArray(value)) {
+valueElement = value.join(', ')
+} else if (
     (optKey === 'signerKey' && isPublicKey(value)) ||
     optKey === 'inflationDest'
   ) {
-    valueEl = <AccountLink account={value} />
+    valueElement = <AccountLink account={value} />
   } else if (optKey === 'signerKey') {
     // and !isPublicKey (#19)
     const decodedValue =
       value.charAt(0) === 'X'
         ? StrKey.decodeSha256Hash(value).toString('hex')
         : StrKey.decodePreAuthTx(value).toString('hex')
-    valueEl = <span title={decodedValue}>{shortHash(decodedValue)}</span>
+    valueElement = <span title={decodedValue}>{shortHash(decodedValue)}</span>
   } else if (optKey === 'homeDomain') {
-    valueEl = <a href={`http://${value}`}>{value}</a>
+    valueElement = <a href={`http://${value}`}>{value}</a>
   }
-  return <span>{valueEl}</span>
+  return <span>{valueElement}</span>
 }
 
-const OptionsList = props => (
+const OptionsList = properties => (
   <span>
-    {Object.keys(props)
+    {Object.keys(properties)
       .filter(p => p in propTypes)
-      .map((prop, idx, all) => (
-        <span key={prop}>
+      .map((property, index, all) => (
+        <span key={property}>
           <Option
-            msgId={dotCase(prop)}
-            value={<OptionValue optKey={prop} value={props[prop]} />}
+            msgId={dotCase(property)}
+            value={<OptionValue optKey={property} value={properties[property]} />}
           />
-          {idx < all.length - 1 && ', '}
+          {index < all.length - 1 && ', '}
         </span>
       ))}
   </span>
 )
 
-const SetOptions = props => (
+const SetOptions = properties => (
   <FormattedMessage
     id="operation.options.set"
     values={{
-      options: <OptionsList {...props} />,
+      options: <OptionsList {...properties} />,
     }}
   />
 )

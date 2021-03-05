@@ -3,8 +3,8 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Panel from 'react-bootstrap/lib/Panel'
 import Row from 'react-bootstrap/lib/Row'
 import {injectIntl} from 'react-intl'
-import TransactionTable from './TransactionTableContainer'
 import {setTitle} from '../lib/utils'
+import TransactionTable from './TransactionTableContainer'
 
 class Transactions extends React.Component {
 render() {

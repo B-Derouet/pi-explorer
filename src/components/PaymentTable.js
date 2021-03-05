@@ -75,30 +75,34 @@ PaymentTable.propTypes = {
   server: PropTypes.object.isRequired,
 }
 
-const rspRecToPropsRec = record => {
+const rspRecToPropertiesRec = record => {
   record.time = record.created_at
   return mapKeys(record, (v, k) => camelCase(k))
 }
 
 const fetchRecords = ({account, tx, limit, server}) => {
   const builder = server.payments()
-  if (tx) builder.forTransaction(tx)
-  if (account) builder.forAccount(account)
+  if (tx) {
+builder.forTransaction(tx)
+}
+  if (account) {
+builder.forAccount(account)
+}
   builder.limit(limit)
   builder.order('desc')
   return builder.call()
 }
 
-const callBuilder = props => props.server.payments()
+const callBuilder = properties => properties.server.payments()
 
 const ExportToCSVComponent = withDataFetchingAllContainer(fetchRecords)(
-  CSVExport
+  CSVExport,
 )
 
 const enhance = compose(
   withPaging(),
-  withDataFetchingContainer(fetchRecords, rspRecToPropsRec, callBuilder),
-  withSpinner()
+  withDataFetchingContainer(fetchRecords, rspRecToPropertiesRec, callBuilder),
+  withSpinner(),
 )
 
 export default enhance(PaymentTable)

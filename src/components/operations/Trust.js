@@ -1,13 +1,13 @@
 import React from 'react'
-import AccountLink from '../shared/AccountLink'
 import {FormattedMessage} from 'react-intl'
+import AccountLink from '../shared/AccountLink'
 
 const Trust = ({assetCode, children, trustee}) =>
   <span>
     <FormattedMessage
       id="operation.trust"
       values={{
-        assetCode: assetCode,
+        assetCode,
         trustee: <AccountLink account={trustee} />,
       }}
     />

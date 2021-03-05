@@ -1,5 +1,4 @@
 import isNaN from 'lodash/isNaN'
-import isEmpty from 'lodash/isEmpty'
 import isString from 'lodash/isString'
 import toNumber from 'lodash/toNumber'
 import {sdk} from './stellar'
@@ -10,59 +9,26 @@ import {
   isStellarAddress,
   isTxHash,
 } from './stellar/utils'
-import directory from '../data/directory'
 
-const {anchors, assets} = directory
+const searchStringToPath = searchString => {
+  if (!isString(searchString) || searchString.trim() === '') {
+return null
+}
 
-const lcEquals = (str1, str2) =>
-  !isEmpty(str1) && !isEmpty(str2) && str1.toLowerCase() === str2.toLowerCase()
+  const string = searchString.trim()
 
-const lcIncludes = (str1, str2) =>
-  !isEmpty(str1) &&
-  !isEmpty(str2) &&
-  str1.toLowerCase().includes(str2.toLowerCase())
-
-const searchAssetCode = code =>
-  Object.keys(assets)
-    .filter(key => lcEquals(assets[key].code, code.toUpperCase()))
-    .map(key => assets[key])
-
-const searchAnchorName = name =>
-  Object.keys(anchors).filter(
-    key =>
-      lcIncludes(anchors[key].name, name) ||
-      lcIncludes(anchors[key].displayName, name)
-  )
-
-const searchStrToPath = searchStr => {
-  if (!isString(searchStr) || searchStr.trim() === '') return null
-
-  const str = searchStr.trim()
-
-  if (isPublicKey(str) || isStellarAddress(str)) {
-    return `/account/${str}`
-  } else if (isTxHash(str)) {
-    return `/tx/${str}`
-  } else if (!isNaN(toNumber(str))) {
-    return `/ledger/${toNumber(str)}`
-  } else if (isSecretKey(str)) {
-    const kp = sdk.Keypair.fromSecret(str)
+  if (isPublicKey(string) || isStellarAddress(string)) {
+    return `/account/${string}`
+  } else if (isTxHash(string)) {
+    return `/tx/${string}`
+  } else if (!isNaN(toNumber(string))) {
+    return `/ledger/${toNumber(string)}`
+  } else if (isSecretKey(string)) {
+    const kp = sdk.Keypair.fromSecret(string)
     return `/account/${kp.publicKey()}`
   }
 
-  // search by asset code
-  const codeMatch = searchAssetCode(str)
-  if (codeMatch.length > 0) {
-    return `/asset/${str.toUpperCase()}`
-  }
-
-  // search by anchor name (exact or substring)
-  const nameMatch = searchAnchorName(str)
-  if (nameMatch.length > 0) {
-    return `/anchor/${nameMatch[0]}`
-  }
-
-  return `/error/not-found/${searchStr}`
+  return `/error/not-found/${searchString}`
 }
 
-export {searchStrToPath}
+export {searchStringToPath as searchStrToPath}

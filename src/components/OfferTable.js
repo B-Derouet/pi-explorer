@@ -28,8 +28,9 @@ class OfferTable extends React.Component {
   render() {
     const {records, showSeller} = this.props
 
-    if (records.length === 0)
-      return <div style={{marginTop: 20, marginBottom: 20}}>No Offers</div>
+    if (records.length === 0) {
+return <div style={{marginTop: 20, marginBottom: 20}}>No Offers</div>
+}
 
     return (
       <div>
@@ -92,7 +93,7 @@ OfferTable.propTypes = {
   showSeller: PropTypes.bool,
 }
 
-const rspRecToPropsRec = record => {
+const rspRecToPropertiesRec = record => {
   return mapKeys(record, (v, k) => camelCase(k))
 }
 
@@ -104,13 +105,13 @@ const fetchRecords = ({account, limit, server}) => {
 }
 
 const ExportToCSVComponent = withDataFetchingAllContainer(fetchRecords)(
-  CSVExport
+  CSVExport,
 )
 
 const enhance = compose(
   withPaging(),
-  withDataFetchingContainer(fetchRecords, rspRecToPropsRec),
-  withSpinner()
+  withDataFetchingContainer(fetchRecords, rspRecToPropertiesRec),
+  withSpinner(),
 )
 
 export default enhance(OfferTable)

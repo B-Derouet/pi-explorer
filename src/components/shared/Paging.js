@@ -1,7 +1,7 @@
 import React from 'react'
 import PagingControls from './PagingControls'
 
-const usePagingCondition = props => props.usePaging === true
+const usePagingCondition = properties => properties.usePaging === true
 
 const withPaging = () => Component => {
   return class extends React.Component {
@@ -27,8 +27,9 @@ const withPaging = () => Component => {
     }
 
     render() {
-      if (usePagingCondition(this.props) === false)
-        return <Component {...this.props} />
+      if (usePagingCondition(this.props) === false) {
+return <Component {...this.props} />
+}
       return (
         <div>
           {!this.state.hide && (

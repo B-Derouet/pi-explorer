@@ -14,7 +14,7 @@ const Spinner = () => (
   </div>
 )
 
-const isLoading = props => props.isLoading === true
+const isLoading = properties => properties.isLoading === true
 
 const withSpinner = () => withEither(isLoading, Spinner)
 

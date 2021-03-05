@@ -36,11 +36,11 @@ const opTypeComponentMap = {
   manage_buy_offer: Offer,
   manage_sell_offer: Offer,
   manage_offer: Offer, // < Protocol 11
-  
+
   path_payment_strict_send: PathPayment,
   path_payment_strict_receive: PathPayment,
-  path_payment: PathPayment,  // < Protocol 12
-  
+  path_payment: PathPayment, // < Protocol 12
+
   payment: Payment,
   set_options: SetOptions,
 }
@@ -53,16 +53,16 @@ const SubOperation = ({op}) => {
 }
 
 const Operation = ({compact, op, opURLFn, parentRenderTimestamp}) => {
-  const acc =
+  const accumulator =
     op.type !== 'account_merge' ? (
       <AccountLink account={op.sourceAccount} />
     ) : (
-      <span title={op.sourceAccount}>{op.sourceAccount.substring(0, 4)}</span>
+      <span title={op.sourceAccount}>{op.sourceAccount.slice(0, 4)}</span>
     )
 
   return (
     <tr key={op.id} className="operation">
-      <td className="account-badge">{acc}</td>
+      <td className="account-badge">{accumulator}</td>
       <td>
         <SubOperation op={op} />
       </td>

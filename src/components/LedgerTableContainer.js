@@ -3,7 +3,7 @@ import {withPaging} from './shared/Paging'
 import {withDataFetchingContainer} from './shared/DataFetchingContainer'
 import LedgerTable from './LedgerTable'
 
-const rspRecToPropsRec = rspRec => {
+const rspRecToPropertiesRec = rspRec => {
   return {
     sequence: rspRec.sequence,
     time: rspRec.closed_at,
@@ -12,17 +12,17 @@ const rspRecToPropsRec = rspRec => {
   }
 }
 
-const fetchRecords = props => {
-  const builder = props.server.ledgers()
-  builder.limit(props.limit)
+const fetchRecords = properties => {
+  const builder = properties.server.ledgers()
+  builder.limit(properties.limit)
   builder.order('desc')
   return builder.call()
 }
 
-const callBuilder = props => props.server.ledgers()
+const callBuilder = properties => properties.server.ledgers()
 
 const enhance = compose(
   withPaging(),
-  withDataFetchingContainer(fetchRecords, rspRecToPropsRec, callBuilder)
+  withDataFetchingContainer(fetchRecords, rspRecToPropertiesRec, callBuilder),
 )
 export default enhance(LedgerTable)

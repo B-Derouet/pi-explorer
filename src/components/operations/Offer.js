@@ -28,43 +28,47 @@ const SellingAsset = ({
 
 const offerType = (amount, offerId) => {
   let type = ''
-  if (offerId === 0) type = 'sell'
-  else if (parseFloat(amount) === 0) type = 'remove'
-  else type = 'update'
+  if (offerId === 0) {
+type = 'sell'
+} else if (Number.parseFloat(amount) === 0) {
+type = 'remove'
+} else {
+type = 'update'
+}
   return type
 }
 
-const Offer = props => {
-  const {amount, offerId, price} = props
-  const msgId = `operation.offer.${offerType(amount, offerId)}`
+const Offer = properties => {
+  const {amount, offerId, price} = properties
+  const messageId = `operation.offer.${offerType(amount, offerId)}`
   return (
     <FormattedMessage
-      id={msgId}
+      id={messageId}
       values={{
         amount: <FormattedAmount amount={amount} />,
-        buyingAsset: <BuyingAsset {...props} />,
+        buyingAsset: <BuyingAsset {...properties} />,
         price: <FormattedAmount amount={price} />,
-        sellingAsset: <SellingAsset {...props} />,
+        sellingAsset: <SellingAsset {...properties} />,
       }}
     />
   )
 }
 
-const OfferRow = props => (
-  <tr key={props.id} className="trade">
-    {props.showSeller === true && (
+const OfferRow = properties => (
+  <tr key={properties.id} className="trade">
+    {properties.showSeller === true && (
       <td className="account-badge">
-        <AccountLink account={props.seller} />
+        <AccountLink account={properties.seller} />
       </td>
     )}
     <td>
-      <SellingAsset {...props} />
+      <SellingAsset {...properties} />
     </td>
     <td>
-      <BuyingAsset {...props} />
+      <BuyingAsset {...properties} />
     </td>
-    <td>{props.amount}</td>
-    <td>{props.price}</td>
+    <td>{properties.amount}</td>
+    <td>{properties.price}</td>
   </tr>
 )
 

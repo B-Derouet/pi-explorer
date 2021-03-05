@@ -1,13 +1,13 @@
 import React from 'react'
-import Trust from './Trust'
 import {FormattedMessage} from 'react-intl'
+import Trust from './Trust'
 
-const ChangeTrust = props =>
-  <Trust {...props}>
+const ChangeTrust = properties =>
+  <Trust {...properties}>
     <FormattedMessage
       id="operation.trust.change"
       values={{
-        limit: props.limit,
+        limit: properties.limit,
       }}
     />
   </Trust>

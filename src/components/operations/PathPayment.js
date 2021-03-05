@@ -1,22 +1,22 @@
 import React from 'react'
-import Payment from './Payment'
-import Asset from '../shared/Asset'
 import {FormattedMessage} from 'react-intl'
+import Asset from '../shared/Asset'
+import Payment from './Payment'
 
-const PathPayment = props => {
+const PathPayment = properties => {
   const sourceAsset = (
     <Asset
-      code={props.sourceAssetCode}
-      issuer={props.sourceAssetIssuer}
-      type={props.sourceAssetType}
+      code={properties.sourceAssetCode}
+      issuer={properties.sourceAssetIssuer}
+      type={properties.sourceAssetType}
     />
   )
   return (
-    <Payment {...props}>
+    <Payment {...properties}>
       <FormattedMessage
         id="operation.payment.path"
         values={{
-          amount: props.sourceAmount,
+          amount: properties.sourceAmount,
           asset: sourceAsset,
         }}
       />

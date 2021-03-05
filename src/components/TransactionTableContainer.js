@@ -1,14 +1,14 @@
 import React from 'react'
 import {compose} from 'recompose'
+import {isPublicKey} from '../lib/stellar/utils'
+import {isDefInt} from '../lib/utils'
 import {withPaging} from './shared/Paging'
 import {withDataFetchingContainer} from './shared/DataFetchingContainer'
 import {withDataFetchingAllContainer} from './shared/DataFetchingAllContainer'
-import {isPublicKey} from '../lib/stellar/utils'
-import {isDefInt} from '../lib/utils'
 import TransactionTable from './TransactionTable'
 import CSVExport from './shared/CSVExport'
 
-const rspRecToPropsRec = rspRec => {
+const rspRecToPropertiesRec = rspRec => {
   return {
     hash: rspRec.hash,
     ledger: rspRec.ledger_attr,
@@ -18,34 +18,38 @@ const rspRecToPropsRec = rspRec => {
   }
 }
 
-const fetchRecords = props => {
-  const builder = props.server.transactions()
-  if (isDefInt(props, 'ledger')) builder.forLedger(props.ledger)
-  if (isPublicKey(props.account)) builder.forAccount(props.account)
-  builder.limit(props.limit)
+const fetchRecords = properties => {
+  const builder = properties.server.transactions()
+  if (isDefInt(properties, 'ledger')) {
+builder.forLedger(properties.ledger)
+}
+  if (isPublicKey(properties.account)) {
+builder.forAccount(properties.account)
+}
+  builder.limit(properties.limit)
   builder.order('desc')
   return builder.call()
 }
 
-const callBuilder = props => props.server.transactions()
+const callBuilder = properties => properties.server.transactions()
 
 const enhance = compose(
   withPaging(),
-  withDataFetchingContainer(fetchRecords, rspRecToPropsRec, callBuilder)
+  withDataFetchingContainer(fetchRecords, rspRecToPropertiesRec, callBuilder),
 )
 
 const ExportToCSVComponent = withDataFetchingAllContainer(fetchRecords)(
-  CSVExport
+  CSVExport,
 )
 
-const wrapHOC = Component => props => (
+const wrapHOC = Component => properties => (
   <div>
     <div>
-      <Component {...props} />
+      <Component {...properties} />
     </div>
-    {!props.noCSVExport && (
+    {!properties.noCSVExport && (
       <div className="text-center" id="csv-export">
-        <ExportToCSVComponent {...props} />
+        <ExportToCSVComponent {...properties} />
       </div>
     )}
   </div>

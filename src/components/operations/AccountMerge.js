@@ -1,6 +1,6 @@
 import React from 'react'
-import AccountLink from '../shared/AccountLink'
 import {FormattedMessage} from 'react-intl'
+import AccountLink from '../shared/AccountLink'
 
 const AccountMerge = ({into}) =>
   <FormattedMessage

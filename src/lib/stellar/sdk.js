@@ -11,7 +11,6 @@ import {AccountCallBuilder} from 'stellar-sdk/lib/account_call_builder'
 import {AssetsCallBuilder} from 'stellar-sdk/lib/assets_call_builder'
 import {TradesCallBuilder} from 'stellar-sdk/lib/trades_call_builder'
 
-
 /* ----------------------------------------------------------
  *
  * Wraps the stellar-sdk to customise the paging behaviour.
@@ -33,8 +32,8 @@ const wrapStellarCallBuilderWithWebPagePaging = CallBuilder => {
       })
     }
 
-    wrapPrev = rspPrev => () => {
-      return rspPrev().then(rsp => {
+    wrapPrev = rspPrevious => () => {
+      return rspPrevious().then(rsp => {
         // prev requests desc so flip it to the order we maintain for every page
         rsp.records = rsp.records.reverse()
 
@@ -82,14 +81,13 @@ const pagingCalls = {
   accounts: AccountCallBuilder,
 }
 
-Object.keys(pagingCalls).forEach(
-  callName =>
-    (sdk.Server.prototype[callName] = function(...params) {
+for (const callName of Object.keys(pagingCalls)) {
+(sdk.Server.prototype[callName] = function(...parameters) {
       const WrappedClass = wrapStellarCallBuilderWithWebPagePaging(
-        pagingCalls[callName]
+        pagingCalls[callName],
       )
-      return new WrappedClass(URI(this.serverURL), ...params)
+      return new WrappedClass(URI(this.serverURL), ...parameters)
     })
-)
+}
 
 export default sdk

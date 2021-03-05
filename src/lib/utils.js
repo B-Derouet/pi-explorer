@@ -11,36 +11,50 @@ BigNumber.config({EXPONENTIAL_AT: 20})
 
 const shortHash = (hash, length = 10) => truncate(hash, {length})
 
-const isDefInt = (obj, key) => {
-  if (!obj || !key || obj.hasOwnProperty(key) === false) return false
-  return Number.isInteger(Number(obj[key]))
+const isDefInt = (object, key) => {
+  if (!object || !key || object.hasOwnProperty(key) === false) {
+return false
+}
+  return Number.isInteger(Number(object[key]))
 }
 
 const base64Decode = value => Buffer.from(value, 'base64').toString()
 const base64DecodeToHex = value => Buffer.from(value, 'base64').toString('hex')
 
 // Extract asset issuer address from keys in the form <code>-<issuer>
-const assetKeyToIssuer = key => key.substring(key.indexOf('-') + 1)
+const assetKeyToIssuer = key => key.slice(Math.max(0, key.indexOf('-') + 1))
 
 const handleFetchDataFailure = id => e => {
   let status
-  if (e.data && e.data.status) status = e.data.status
-  else if (e.response && e.response.status) status = e.response.status
+  if (e.data && e.data.status) {
+status = e.data.status
+} else if (e.response && e.response.status) {
+status = e.response.status
+}
 
-  let msg = 'Failed to fetch data:'
-  if (status) msg += `\n\tStatus: [${status}]`
-  if (e.response && e.response.status)
-    msg += `\n\tStatus: [${e.response.status}]`
-  if (e.message) msg += `\n\tMessage: [${e.message}]`
-  if (e.stack) msg += `\n\tStack: [${e.stack}]`
+  let message = 'Failed to fetch data:'
+  if (status) {
+message += `\n\tStatus: [${status}]`
+}
+  if (e.response && e.response.status) {
+message += `\n\tStatus: [${e.response.status}]`
+}
+  if (e.message) {
+message += `\n\tMessage: [${e.message}]`
+}
+  if (e.stack) {
+message += `\n\tStack: [${e.stack}]`
+}
 
-  console.error(msg)
+  console.error(message)
   console.error(`Raw Error: ${e}`)
 
   let errorURI
   if (status === 404) {
     let redirectURI = '/error/not-found'
-    if (id) redirectURI += `/${id}`
+    if (id) {
+redirectURI += `/${id}`
+}
     errorURI = redirectURI
   } else if (e.message === 'Network Error') {
     errorURI = '/error/general/network'
@@ -53,7 +67,7 @@ const handleFetchDataFailure = id => e => {
 const storageInit = () => {
   let storage
   if (typeof localStorage === 'undefined' || localStorage === null) {
-    const storagePath = join(tmpdir(), 'steexp')
+    const storagePath = join(tmpdir(), 'piexp')
     const LocalStorage = require('node-localstorage').LocalStorage
     storage = new LocalStorage(storagePath)
   } else {
@@ -66,7 +80,7 @@ const formatAmount = amount => {
   return new BigNumber(amount).toString()
 }
 
-const setTitle = subTitle => (document.title = `Stellar Explorer | ${subTitle}`)
+const setTitle = subTitle => (document.title = `Pi Explorer | ${subTitle}`)
 
 export {
   assetKeyToIssuer,

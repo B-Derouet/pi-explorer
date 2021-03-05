@@ -5,10 +5,10 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import {injectIntl} from 'react-intl'
 
+import {setTitle} from '../lib/utils'
 import LedgerTable from './LedgerTableContainer'
 import OperationTable from './OperationTable'
 import TransactionTable from './TransactionTableContainer'
-import {setTitle} from '../lib/utils'
 import Title from './shared/TitleWithLink'
 
 const panelHeader = (title, viewAllLabel, viewAllLink) => (
@@ -23,7 +23,7 @@ class Home extends React.Component {
   render() {
     setTitle('Home')
     const {formatMessage} = this.props.intl
-    const viewAllStr = formatMessage({id: 'view.all'})
+    const viewAllString = formatMessage({id: 'view.all'})
     return (
       <Grid id="home">
         <Row>
@@ -31,8 +31,8 @@ class Home extends React.Component {
             <Panel
               header={panelHeader(
                 formatMessage({id: 'latest.operations'}),
-                viewAllStr,
-                '/operations'
+                viewAllString,
+                '/operations',
               )}
             >
               <OperationTable compact fill limit={25} refresh noCSVExport={true} />
@@ -42,8 +42,8 @@ class Home extends React.Component {
             <Panel
               header={panelHeader(
                 formatMessage({id: 'latest.txs'}),
-                viewAllStr,
-                '/txs'
+                viewAllString,
+                '/txs',
               )}
             >
               <TransactionTable
@@ -59,8 +59,8 @@ class Home extends React.Component {
             <Panel
               header={panelHeader(
                 formatMessage({id: 'latest.ledgers'}),
-                viewAllStr,
-                '/ledgers'
+                viewAllString,
+                '/ledgers',
               )}
             >
               <LedgerTable fill limit={10} refresh compact />

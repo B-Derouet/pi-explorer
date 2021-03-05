@@ -11,122 +11,65 @@ import Modal from 'react-bootstrap/lib/Modal'
 import {withRouter} from 'react-router'
 import {injectIntl} from 'react-intl'
 
-import {searchStrToPath} from '../../lib/search'
+import {searchStrToPath as searchStringToPath} from '../../lib/search'
 import {isSecretKey} from '../../lib/stellar/utils'
 
-const HelpModal = props => (
-  <Modal id="help-modal" show={props.show} onHide={props.handleCloseFn}>
-    <Modal.Header closeButton>
-      <Modal.Title id="contained-modal-title-lg" style={{color: '#dce2ec'}}>
-        Search Help
-      </Modal.Title>
-    </Modal.Header>
-    <Modal.Body style={{color: '#96a2b4'}}>
-      <h4>Search By:</h4>
-      <br />
-      <div>
-        <h5>Stellar Address</h5>
-        Also called a{' '}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.stellar.org/developers/guides/concepts/federation.html#stellar-addresses"
-        >
-          Stellar federated address
-        </a>
-        <img
-          src={`${process.env.PUBLIC_URL}/search/search_stellar_address.png`}
-          alt="search by ledger"
-        />
-      </div>
-      <div>
-        <h5>Account ID</h5>
-        Also called a Public Key or Public Address
-        <img
-          src={`${process.env.PUBLIC_URL}/search/search_account_public.png`}
-          alt="search by public account address"
-          width="100%"
-        />
-      </div>
-      <div>
-        <h5>Anchor Name</h5>
+const HelpModal = properties => {
+  const {formatMessage} = properties.intl
+
+  return (
+    <Modal id="help-modal" show={properties.show} onHide={properties.handleCloseFn}>
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-lg" style={{color: '#dce2ec'}}>
+          {formatMessage({id: 'search.help'})}
+          </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{color: '#96a2b4'}}>
+        <h4>{formatMessage({id: 'search.by'})}</h4>
+        <br />
         <div>
-          as listed on the{' '}
+          <h5>{formatMessage({id: 'search.stellar.address'})}</h5>
+          {formatMessage({id: 'search.stellar.other.name'})}{' '}
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://steexp.com/anchors"
+            href="https://www.stellar.org/developers/guides/concepts/federation.html#stellar-addresses"
           >
-            Anchors Page
+            {formatMessage({id: 'search.stellar.federated.address'})}
           </a>
+          <img
+            src={`${process.env.PUBLIC_URL}/search/search_stellar_address.png`}
+            alt={formatMessage({id: 'search.by.stellar.federated.address'})}
+          />
         </div>
         <div>
-          <br />
-          Full name:
-          <br />
+          <h5>{formatMessage({id: 'search.accoundID'})}</h5>
+          {formatMessage({id: 'search.accoundID.explanation'})}
           <img
-            src={`${process.env.PUBLIC_URL}/search/search_anchor_name_full.png`}
-            alt="search by anchor full name"
+            src={`${process.env.PUBLIC_URL}/search/search_account_public.png`}
+            alt={formatMessage({id: 'search.by.account.address'})}
+            width="100%"
           />
         </div>
-        <div style={{marginTop: 20}}>
-          Partial name:
-          <br />
+        <div>
+          <h5>{formatMessage({id: 'search.transaction.hash'})}</h5>
           <img
-            src={`${
-              process.env.PUBLIC_URL
-            }/search/search_anchor_name_partial.png`}
-            alt="search by anchor partial name"
+            src={`${process.env.PUBLIC_URL}/search/search_tx_hash.png`}
+            alt={formatMessage({id: 'search.by.transaction.hash'})}
+            width="100%"
           />
         </div>
-      </div>
-      <div>
-        <h5>Asset Code</h5>
-        <img
-          src={`${process.env.PUBLIC_URL}/search/search_asset.png`}
-          alt="search by asset code"
-        />
-      </div>
-      <div>
-        <h5>Transaction Hash</h5>
-        <img
-          src={`${process.env.PUBLIC_URL}/search/search_tx_hash.png`}
-          alt="search by transaction hash"
-          width="100%"
-        />
-      </div>
-      <div>
-        <h5>Ledger</h5>
-        <img
-          src={`${process.env.PUBLIC_URL}/search/search_ledger.png`}
-          alt="search by ledger"
-        />
-      </div>
-      <hr />
-      <h4>OpenSearch:</h4>
-      <div>
-        Stellar Explorer supports{' '}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://developer.mozilla.org/en-US/docs/Web/OpenSearch"
-        >
-          OpenSearch
-        </a>
-        . This allows you to search directly from your browser search box or
-        search bar. You should see something like the following when you
-        navigate to Stellar Explorer then open the search box. Install it from
-        there:
-        <br />
-        <img
-          src="https://user-images.githubusercontent.com/1477978/33513399-8cf8ac52-d774-11e7-9585-ddc5467a5a2d.png"
-          alt="search by transaction hash"
-          width="80%"
-        />
-      </div>
-    </Modal.Body>
-  </Modal>
-)
+        <div>
+          <h5>{formatMessage({id: 'search.ledger'})}</h5>
+          <img
+            src={`${process.env.PUBLIC_URL}/search/search_ledger.png`}
+            alt={formatMessage({id: 'search.by.ledger'})}
+          />
+        </div>
+      </Modal.Body>
+    </Modal>
+  )
+}
 
 class SearchBox extends React.Component {
   state = {
@@ -134,8 +77,8 @@ class SearchBox extends React.Component {
     showHelp: false,
   }
 
-  constructor(props, context) {
-    super(props, context)
+  constructor(properties, context) {
+    super(properties, context)
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
   }
@@ -151,7 +94,7 @@ class SearchBox extends React.Component {
 
   searchHandler = event => {
     event.preventDefault()
-    const matchPath = searchStrToPath(this.state.searchStr)
+    const matchPath = searchStringToPath(this.state.searchStr)
     this.props.history.push(matchPath)
     // #62 security: clear search box if user put the secret key there
     if (isSecretKey(this.state.searchStr)) {
@@ -186,7 +129,7 @@ class SearchBox extends React.Component {
           </InputGroup>
         </form>
         {this.state.show && (
-          <HelpModal handleCloseFn={this.handleClose} show={this.state.show} />
+          <HelpModal handleCloseFn={this.handleClose} show={this.state.show} intl={this.props.intl} />
         )}
       </Col>
     </Row>

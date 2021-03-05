@@ -10,7 +10,6 @@ import {injectIntl, FormattedMessage} from 'react-intl'
 import {FederationServer, StrKey} from 'stellar-sdk'
 import has from 'lodash/has'
 
-import knownAccounts from '../data/known_accounts'
 import {isPublicKey, isStellarAddress} from '../lib/stellar/utils'
 import {base64Decode, handleFetchDataFailure, setTitle} from '../lib/utils'
 import {withServer} from './shared/HOCs'
@@ -22,23 +21,24 @@ import Asset from './shared/Asset'
 import ClipboardCopy from './shared/ClipboardCopy'
 import EffectTable from './EffectTable'
 import FormattedAmount from './shared/FormattedAmount'
-import Logo from './shared/Logo'
 import OperationTable from './OperationTable'
 import OfferTable from './OfferTable'
 import PaymentTable from './PaymentTable'
-import TradeTable from './TradeTable'
 import TransactionTable from './TransactionTableContainer'
 
 const stellarAddressFromURI = () => {
-  if (!window || !window.location || !window.location.pathname) return
+  if (!window || !window.location || !window.location.pathname) {
+return
+}
   const path = window.location.pathname
-  const lastPath = path.substring(path.lastIndexOf('/') + 1)
+  const lastPath = path.slice(Math.max(0, path.lastIndexOf('/') + 1))
   return isStellarAddress(lastPath) ? lastPath : undefined
 }
 
 const NameValueTable = ({data, decodeValue = false}) => {
-  if (!data || Object.keys(data).length === 0)
-    return <div style={{marginTop: 20, marginBottom: 20}}>No Data</div>
+  if (!data || Object.keys(data).length === 0) {
+return <div style={{marginTop: 20, marginBottom: 20}}>No Data</div>
+}
   return (
     <Table>
       <thead>
@@ -70,7 +70,7 @@ const NameValueTable = ({data, decodeValue = false}) => {
 }
 
 const balanceRow = bal => (
-  <tr key={bal.asset_code ? `${bal.asset_code}-${bal.asset_issuer}` : 'XLM'}>
+  <tr key={bal.asset_code ? `${bal.asset_code}-${bal.asset_issuer}` : 'Test-π'}>
     <td>
       <Asset
         type={bal.asset_type}
@@ -89,7 +89,7 @@ const balanceRow = bal => (
   </tr>
 )
 
-const Balances = props => (
+const Balances = properties => (
   <Table>
     <thead>
       <tr>
@@ -104,7 +104,7 @@ const Balances = props => (
         </th>
       </tr>
     </thead>
-    <tbody>{props.balances.map(balanceRow)}</tbody>
+    <tbody>{properties.balances.map(balanceRow)}</tbody>
   </Table>
 )
 
@@ -133,7 +133,7 @@ const Thresholds = ({thresholds}) => (
   </Table>
 )
 
-const Signers = props => (
+const Signers = properties => (
   <Table>
     <thead>
       <tr>
@@ -149,7 +149,7 @@ const Signers = props => (
       </tr>
     </thead>
     <tbody>
-      {props.signers.map(signer => (
+      {properties.signers.map(signer => (
         <tr key={signer.key}>
           <td>
             {signer.type === 'ed25519_public_key' && (
@@ -175,13 +175,12 @@ const AccountSummaryPanel = ({
   account: a,
   accountUrl,
   formatMessageFn,
-  knownAccounts,
 }) => {
   setTitle(`Account ${a.id}`)
 
   const header = titleWithJSONButton(
     formatMessageFn({id: 'account'}),
-    accountUrl
+    accountUrl,
   )
   const stellarAddr = stellarAddressFromURI()
 
@@ -224,17 +223,6 @@ const AccountSummaryPanel = ({
               <Col md={9}>{a.subentry_count}</Col>
             </Row>
           </Col>
-          {has(knownAccounts, a.id) &&
-            knownAccounts[a.id].logo && (
-              <Col md={2}>
-                <div style={{marginBottom: 10}}>
-                  <Logo
-                    type={knownAccounts[a.id].type}
-                    name={knownAccounts[a.id].logo}
-                  />
-                </div>
-              </Col>
-            )}
         </Row>
       </Grid>
     </Panel>
@@ -247,8 +235,8 @@ class Account extends React.Component {
     renderEffects: false,
   }
 
-  constructor(props, context) {
-    super(props, context)
+  constructor(properties, context) {
+    super(properties, context)
     this.handleURIHash = this.handleURIHash.bind(this)
     this.handleSelect = this.handleSelect.bind(this)
     this.setNewState = this.setNewState.bind(this)
@@ -258,19 +246,21 @@ class Account extends React.Component {
     this.handleURIHash()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProperties) {
     this.handleURIHash()
   }
 
   setNewState(tabKey) {
     const newState = {key: tabKey}
-    if (tabKey === 'effects') newState.renderEffects = true
+    if (tabKey === 'effects') {
+      newState.renderEffects = true
+    }
     this.setState(newState)
   }
 
   handleURIHash() {
     if (has(window.location, 'hash') && window.location.hash.length > 1) {
-      const tab = window.location.hash.substring(1) // string after '#'
+      const tab = window.location.hash.slice(1) // string after '#'
       this.setNewState(tab)
     }
   }
@@ -290,7 +280,6 @@ class Account extends React.Component {
             account={a}
             accountUrl={this.props.urlFn(a.id)}
             formatMessageFn={formatMessage}
-            knownAccounts={knownAccounts}
           />
         </Row>
         <Row>
@@ -321,9 +310,6 @@ class Account extends React.Component {
                 showSeller={false}
                 usePaging
               />
-            </Tab>
-            <Tab eventKey="trades" title={formatMessage({id: 'trades'})}>
-              <TradeTable key={a.id} account={a.id} limit={20} usePaging />
             </Tab>
             <Tab eventKey="effects" title={formatMessage({id: 'effects'})}>
               {// OPTIMISATION: render on focus only as it hits the server for every effect
@@ -403,25 +389,27 @@ class AccountContainer extends React.Component {
     this.loadAccount(this.props.match.params.id)
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.loadAccount(nextProps.match.params.id)
+  componentWillReceiveProps(nextProperties) {
+    this.loadAccount(nextProperties.match.params.id)
   }
 
   loadAccount(accountId) {
-    if (isPublicKey(accountId)) this.loadAccountByKey(accountId)
-    else if (isStellarAddress(accountId))
-      this.loadAccountByStellarAddress(accountId)
-    else
-      handleFetchDataFailure(accountId)(
-        new Error(`Unrecognized account: ${accountId}`)
+    if (isPublicKey(accountId)) {
+this.loadAccountByKey(accountId)
+} else if (isStellarAddress(accountId)) {
+this.loadAccountByStellarAddress(accountId)
+} else {
+handleFetchDataFailure(accountId)(
+        new Error(`Unrecognized account: ${accountId}`),
       )
+}
   }
 
   loadAccountByStellarAddress(stellarAddr) {
     const [name, domain] = stellarAddr.split('*')
     FederationServer.createForDomain(domain)
       .then(fed => fed.resolveAddress(name))
-      .then(acc => this.loadAccount(acc.account_id))
+      .then(accumulator => this.loadAccount(accumulator.account_id))
       .catch(handleFetchDataFailure(stellarAddr))
   }
 

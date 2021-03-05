@@ -9,13 +9,13 @@ import {
 it('assetKeyToIssuer extracts correctly', () => {
   expect(
     assetKeyToIssuer(
-      'NGN-GCLRUZDCWBHS7VIFCT43BARPP63BHR32HMEVKXYQODA5BU6SIGFK4HL2'
-    )
+      'NGN-GCLRUZDCWBHS7VIFCT43BARPP63BHR32HMEVKXYQODA5BU6SIGFK4HL2',
+    ),
   ).toBe('GCLRUZDCWBHS7VIFCT43BARPP63BHR32HMEVKXYQODA5BU6SIGFK4HL2')
   expect(
     assetKeyToIssuer(
-      'MOBI-GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH'
-    )
+      'MOBI-GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH',
+    ),
   ).toBe('GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH')
 })
 
@@ -38,8 +38,8 @@ it('isDefInt checks for defined int correctly', () => {
 it('shortHash shortens hash', () => {
   expect(
     shortHash(
-      'ddeff3d3b8455f8173ef4d63e6650625734207fd351d2b9eeeaf0e38ffe1064b'
-    )
+      'ddeff3d3b8455f8173ef4d63e6650625734207fd351d2b9eeeaf0e38ffe1064b',
+    ),
   ).toBe('ddeff3d...')
 })
 

@@ -9,7 +9,7 @@ configure({adapter: new Adapter()})
 it('renders button with given url', () => {
   const url = 'https://somebackend.xyz/ledger/12345'
   const title = 'Ledger'
-  const btn = shallow(<TitleWithJSONButton title={title} url={url} />)
-  expect(btn.find('JSONButton').props().url).toEqual(url)
-  expect(btn.getElements()).toMatchSnapshot()
+  const button = shallow(<TitleWithJSONButton title={title} url={url} />)
+  expect(button.find('JSONButton').props().url).toEqual(url)
+  expect(button.getElements()).toMatchSnapshot()
 })

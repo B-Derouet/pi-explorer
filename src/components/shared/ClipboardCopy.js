@@ -24,8 +24,8 @@ class ClipboardCopy extends React.Component {
     copied: false,
   }
 
-  constructor(props, context) {
-    super(props, context)
+  constructor(properties, context) {
+    super(properties, context)
     this.handleCopy = this.handleCopy.bind(this)
   }
 

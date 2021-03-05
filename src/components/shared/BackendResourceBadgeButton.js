@@ -5,10 +5,10 @@ import JSONPretty from 'react-json-pretty'
 import Button from 'react-bootstrap/lib/Button'
 import Modal from 'react-bootstrap/lib/Modal'
 
+import FetchPonyfill from 'fetch-ponyfill'
 import NewWindowIcon from '../shared/NewWindowIcon'
 import {withSpinner} from '../shared/Spinner'
 
-import FetchPonyfill from 'fetch-ponyfill'
 const fetch = FetchPonyfill().fetch
 
 /**
@@ -36,8 +36,8 @@ BackendResourceBadgeButton.propTypes = {
 class ClipboardCopyButton extends React.Component {
   state = {copied: false}
 
-  constructor(props, context) {
-    super(props, context)
+  constructor(properties, context) {
+    super(properties, context)
     this.handleClickCopy = this.handleClickCopy.bind(this)
   }
 
@@ -81,13 +81,13 @@ const ResourceModalBody = ({handleCloseFn, isJson, show, text, url}) => (
 
 const ResourceModalBodyWithSpinner = withSpinner()(ResourceModalBody)
 
-const ResourceModal = props => (
-  <Modal id="resourceModal" show={props.show} onHide={props.handleCloseFn}>
+const ResourceModal = properties => (
+  <Modal id="resourceModal" show={properties.show} onHide={properties.handleCloseFn}>
     <Modal.Header closeButton>
-      <ClipboardCopyButton text={props.text} />
+      <ClipboardCopyButton text={properties.text} />
     </Modal.Header>
     <Modal.Body>
-      <ResourceModalBodyWithSpinner {...props} />
+      <ResourceModalBodyWithSpinner {...properties} />
     </Modal.Body>
   </Modal>
 )
@@ -113,7 +113,7 @@ class ResourceModalContainer extends React.Component {
     return (
       this.props.url.endsWith('.json') ||
       (rsp.headers.has('content-type') &&
-        rsp.headers.get('content-type').indexOf('json') !== -1)
+        rsp.headers.get('content-type').includes('json'))
     )
   }
 
@@ -129,7 +129,9 @@ class ResourceModalContainer extends React.Component {
       const records = JSON.parse(rspText)['_embedded'].records
       text = this.props.filterFn(records)
       // if not found then revert to the original source
-      if (text == null) text = rspText
+      if (text === undefined) {
+text = rspText
+}
     }
     return text
   }
@@ -143,11 +145,11 @@ class ResourceModalContainer extends React.Component {
           isLoading: false,
           isJson,
           show: true,
-        })
+        }),
       )
-      .catch(err => {
+      .catch(error => {
         console.error(
-          `Failed to fetch resource [${this.props.url}] Err: [${err}]`
+          `Failed to fetch resource [${this.props.url}] Err: [${error}]`,
         )
         this.setState({
           fetchFailed: true,
@@ -157,29 +159,21 @@ class ResourceModalContainer extends React.Component {
   }
 
   render() {
-    if (this.state.fetchFailed) {
-      return (
-        <ResourceModal
+    return this.state.fetchFailed ? (<ResourceModal
           handleCloseFn={this.props.handleCloseFn}
           isJson={false}
           isLoading={false}
           show={true}
           text="Fetch resource failed ... Try the link above."
           url={this.props.url}
-        />
-      )
-    } else {
-      return (
-        <ResourceModal
+        />) : (<ResourceModal
           handleCloseFn={this.props.handleCloseFn}
           isJson={this.state.isJson}
           isLoading={this.state.isLoading}
           show={this.props.show}
           text={this.state.text}
           url={this.props.url}
-        />
-      )
-    }
+        />)
   }
 }
 
@@ -191,8 +185,8 @@ ResourceModalContainer.propTypes = {
 }
 
 class BackendResourceBadgeButtonWithResourceModal extends React.Component {
-  constructor(props, context) {
-    super(props, context)
+  constructor(properties, context) {
+    super(properties, context)
 
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)

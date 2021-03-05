@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import isFunction from 'lodash/isFunction'
 import has from 'lodash/has'
-import {withServer} from './HOCs'
 import {handleFetchDataFailure} from '../../lib/utils'
+import {withServer} from './HOCs'
 
 // Timeout the streaming after 3 minutes. At least until the issue #40 is done
 const STREAM_TIMEOUT = 3 * 60 * 1000
 
-const propTypesContainer = {
+const propertyTypesContainer = {
   limit: PropTypes.number,
   page: PropTypes.number,
   usePaging: PropTypes.bool,
@@ -29,9 +29,9 @@ const propTypesContainer = {
  *          CallBuilder is used to setup a stream() to receive updates.
  */
 const withDataFetchingContainer = (
-  fetchDataFn,
-  rspRecToPropsRecFn,
-  callBuilderFn
+  fetchDataFunction,
+  rspRecToPropertiesRecFunction,
+  callBuilderFunction,
 ) => Component => {
   const dataFetchingContainerClass = class extends React.Component {
     static defaultProps = {
@@ -49,19 +49,19 @@ const withDataFetchingContainer = (
     }
 
     componentDidMount() {
-      this.fetchData(fetchDataFn(this.props))
+      this.fetchData(fetchDataFunction(this.props))
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(previousProperties) {
       // fetched data and page hasn't changed
-      if (this.props.page === prevProps.page) {
+      if (this.props.page === previousProperties.page) {
         // setup new records stream if refresh on and stream hasn't yet been
         // initialised
         if (
           this.props.refresh === true &&
           this.props.usePaging === false &&
           !isFunction(this.state.streamCloseFn) &&
-          isFunction(callBuilderFn)
+          isFunction(callBuilderFunction)
         ) {
           this.createStream()
         }
@@ -69,15 +69,19 @@ const withDataFetchingContainer = (
       }
 
       // next / prev page - fetch new page data
-      if (this.props.page > prevProps.page) this.fetchData(this.state.next())
-      else if (this.props.page < prevProps.page)
-        this.fetchData(this.state.prev())
+      if (this.props.page > previousProperties.page) {
+this.fetchData(this.state.next())
+} else if (this.props.page < previousProperties.page) {
+this.fetchData(this.state.prev())
+}
 
       this.setState({isLoading: true, records: []})
     }
 
     componentWillUnmount() {
-      if (isFunction(this.state.streamCloseFn)) this.state.streamCloseFn()
+      if (isFunction(this.state.streamCloseFn)) {
+this.state.streamCloseFn()
+}
     }
 
     /*
@@ -92,8 +96,8 @@ const withDataFetchingContainer = (
           this.setState(newState)
           return null
         })
-        .catch(e => {
-          handleFetchDataFailure()(e)
+        .catch(error => {
+          handleFetchDataFailure()(error)
           this.setState({isLoading: false})
         })
     }
@@ -110,7 +114,7 @@ const withDataFetchingContainer = (
         isLoading: false,
         next: rsp.next,
         prev: rsp.prev,
-        records: rsp.records.map(rspRecToPropsRecFn),
+        records: rsp.records.map(rspRecToPropertiesRecFunction),
         cursor,
         parentRenderTimestamp: Date.now(),
       }
@@ -123,9 +127,11 @@ const withDataFetchingContainer = (
      */
 
     createStream() {
-      if (!isFunction(callBuilderFn) || this.state.cursor <= 0) return
+      if (!isFunction(callBuilderFunction) || this.state.cursor <= 0) {
+return
+}
 
-      const streamCloseFn = callBuilderFn(this.props)
+      const streamCloseFunction = callBuilderFunction(this.props)
         .order('asc')
         .cursor(this.state.cursor)
         .stream({
@@ -137,15 +143,15 @@ const withDataFetchingContainer = (
         this.state.streamCloseFn()
       }, STREAM_TIMEOUT)
 
-      this.setState({streamCloseFn})
+      this.setState({streamCloseFn: streamCloseFunction})
     }
 
     onStreamNewRecord(newRecordFromServer) {
-      const newRecord = rspRecToPropsRecFn(newRecordFromServer)
+      const newRecord = rspRecToPropertiesRecFunction(newRecordFromServer)
       const records = [...this.state.records] // new array instead of mutating the existing one
 
-      const insertIdx = records.findIndex(rec => rec.time < newRecord.time)
-      records.splice(insertIdx, 0, newRecord)
+      const insertIndex = records.findIndex(rec => rec.time < newRecord.time)
+      records.splice(insertIndex, 0, newRecord)
       records.splice(-1, 1)
 
       this.setState({
@@ -175,7 +181,7 @@ const withDataFetchingContainer = (
     }
   }
 
-  dataFetchingContainerClass.propTypes = propTypesContainer
+  dataFetchingContainerClass.propTypes = propertyTypesContainer
 
   return withServer(dataFetchingContainerClass)
 }

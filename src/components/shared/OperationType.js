@@ -9,13 +9,13 @@ const filterFor = (type) => {
 const OperationType = ({account, type, compact = true}) => {
   const hashLabel = compact ? shortHash(type) : type
   const className = !compact ? 'monospace' : ''
-  const fn = (event) => {
+  const function_ = (event) => {
     event.preventDefault()
     filterFor(type)
   }
   return (
     <span title={type} className={className}>
-      <a href="/" onClick={fn}>{hashLabel}</a>
+      <a href="/" onClick={function_}>{hashLabel}</a>
     </span>
   )
 }

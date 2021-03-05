@@ -15,9 +15,9 @@ class Footer extends React.PureComponent {
             }
           </Col>
           <Col mdOffset={7} md={2}>
-            <a href="https://github.com/chatch/stellarexplorer">
+            <a href="https://github.com/B-Derouet/pi-explorer">
               <img
-                src={`${process.env.PUBLIC_URL}/img/gh.svg`}
+                src="/img/gh.svg"
                 alt="github"
                 height={20}
                 width={20}
@@ -28,9 +28,9 @@ class Footer extends React.PureComponent {
         </Row>
         <Row>
           <Col mdOffset={10} md={2}>
-            <a href="https://github.com/chatch/stellarexplorer/issues">
+            <a href="https://github.com/B-Derouet/pi-explorer/issues">
               <img
-                src={`${process.env.PUBLIC_URL}/img/support.svg`}
+                src="/img/support.svg"
                 alt="support"
                 height={20}
                 width={20}
@@ -41,14 +41,14 @@ class Footer extends React.PureComponent {
         </Row>
         <Row>
           <Col mdOffset={10} md={2}>
-            <a href="https://stellar.org">
+            <a href="https://minepi.com/">
               <img
-                src={`${process.env.PUBLIC_URL}/stellar.ico`}
-                alt="stellar"
+                src="https://minepi.com/favicon-32x32.png"
+                alt="Pi Network"
                 height={20}
                 width={20}
               />
-              Stellar.org
+              minepi.com
             </a>
           </Col>
         </Row>

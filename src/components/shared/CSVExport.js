@@ -5,7 +5,6 @@ import has from 'lodash/has'
 import ExportButton from './ExportButton'
 
 class CSVExport extends React.Component {
-
   static defaultProps = {
     limit: 100,
     page: 0,

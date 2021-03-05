@@ -34,10 +34,12 @@ class Transaction extends React.Component {
 
   render() {
     const {id, urlFn, fee, ledger, memoType, memo, opCount, time} = this.props
-    if (!id) return null
-    
+    if (!id) {
+return null
+}
+
     setTitle(`Transaction ${id}`)
-    
+
     const {formatMessage} = this.props.intl
 
     return (
@@ -50,7 +52,7 @@ class Transaction extends React.Component {
                 <span className="secondary-heading">{id}</span>
                 <ClipboardCopy text={id} />
               </span>,
-              urlFn(id)
+              urlFn(id),
             )}
           >
             <Table>
@@ -68,7 +70,7 @@ class Transaction extends React.Component {
                   <td>
                     <FormattedMessage id="fee" />
                   </td>
-                  <td>{fee} stroops</td>
+                  <td>{fee} Test-π</td>
                 </tr>
                 <tr>
                   <td>
@@ -143,7 +145,9 @@ class TransactionContainer extends React.Component {
   }
 
   render() {
-    if (!this.state.tx) return null
+    if (!this.state.tx) {
+return null
+}
     const tx = this.state.tx
     return (
       <TransactionIntl

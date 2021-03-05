@@ -2,52 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
 		<loc>
-			https://steexp.com/
+			link
 		</loc>
 	</url>
 	<url>
 		<loc>
-			https://steexp.com/operations
+			link/operations
 		</loc>
 	</url>
 	<url>
 		<loc>
-			https://steexp.com/ledgers
+			link/ledgers
 		</loc>
 	</url>
 	<url>
 		<loc>
-			https://steexp.com/txs
+			link/txs
 		</loc>
 	</url>
 	<url>
 		<loc>
-			https://steexp.com/exchanges
+			link/payments
 		</loc>
 	</url>
 	<url>
 		<loc>
-			https://steexp.com/assets
-		</loc>
-	</url>
-	<url>
-		<loc>
-			https://steexp.com/anchors
-		</loc>
-	</url>
-	<url>
-		<loc>
-			https://steexp.com/payments
-		</loc>
-	</url>
-	<url>
-		<loc>
-			https://steexp.com/effects
-		</loc>
-	</url>
-	<url>
-		<loc>
-			https://steexp.com/trades
+			link/effects
 		</loc>
 	</url>
 </urlset>

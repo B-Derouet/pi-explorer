@@ -12,7 +12,7 @@ class InsecureNetworkError extends React.Component {
           <h3>
             <FormattedMessage id="error.occurred" />
             {uri ? (
-              <FormattedMessage id="error.insecure-network.uri" values={{uri: uri}} />
+              <FormattedMessage id="error.insecure-network.uri" values={{uri}} />
             ) : (
               <FormattedMessage
                 id="error.insecure-network"

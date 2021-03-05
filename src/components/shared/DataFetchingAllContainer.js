@@ -7,9 +7,9 @@ import has from 'lodash/has'
 import mapKeys from 'lodash/mapKeys'
 import omit from 'lodash/omit'
 
-import {withServer} from './HOCs'
 import {handleFetchDataFailure} from '../../lib/utils'
 import {exportCSV} from '../../lib/csv'
+import {withServer} from './HOCs'
 
 // there is a hard limitation of how many records can be exported.
 // this limitation is here to prevent browser memory overload and
@@ -17,7 +17,7 @@ import {exportCSV} from '../../lib/csv'
 // accidentally tries to export all of horizon).
 const EXPORT_LIMIT = 20000
 
-const propTypesContainer = {
+const propertyTypesContainer = {
   limit: PropTypes.number,
   page: PropTypes.number,
   usePaging: PropTypes.bool,
@@ -34,8 +34,8 @@ const propTypesContainer = {
  * @param rspRecToPropsRecFn {Function} Converts from server response record
  *          format to some other format that the consuming container expects.
  */
-const withDataFetchingAllContainer = fetchDataFn => Component => {
-  const rspRecToPropsRecFn = record => {
+const withDataFetchingAllContainer = fetchDataFunction => Component => {
+  const rspRecToPropertiesRecFunction = record => {
     record = mapKeys(record, (v, k) => camelCase(k))
     return omit(record, ['links', 'pagingToken'])
   }
@@ -103,8 +103,8 @@ const withDataFetchingAllContainer = fetchDataFn => Component => {
             this.fetchDataFn(this.state)
           }
         })
-        .catch(e => {
-          handleFetchDataFailure()(e)
+        .catch(error => {
+          handleFetchDataFailure()(error)
           this.setState({wasExportStarted: false})
         })
     }
@@ -122,7 +122,7 @@ const withDataFetchingAllContainer = fetchDataFn => Component => {
         next: rsp.next,
         prev: rsp.prev,
         fetchedRecords: this.state.fetchedRecords.concat(
-          rsp.records.map(rspRecToPropsRecFn)
+          rsp.records.map(rspRecToPropertiesRecFunction),
         ),
         cursor,
         parentRenderTimestamp: Date.now(),
@@ -141,7 +141,7 @@ const withDataFetchingAllContainer = fetchDataFn => Component => {
               this.setState(newState)
 
               var initial = extend({}, this.props, newState)
-              this.fetchData(fetchDataFn(initial))
+              this.fetchData(fetchDataFunction(initial))
             }}
             fetchedRecords={this.state.fetchedRecords}
             parentRenderTimestamp={this.state.parentRenderTimestamp}
@@ -152,7 +152,7 @@ const withDataFetchingAllContainer = fetchDataFn => Component => {
     }
   }
 
-  dataFetchingContainerClass.propTypes = propTypesContainer
+  dataFetchingContainerClass.propTypes = propertyTypesContainer
 
   return withServer(dataFetchingContainerClass)
 }

@@ -11,7 +11,7 @@ class LumensRatesContainer extends React.PureComponent {
     this.updatePrice()
     this.intervalId = setInterval(
       () => this.updatePrice.bind(this),
-      UPDATE_INTERVAL
+      UPDATE_INTERVAL,
     )
   }
 
@@ -30,31 +30,33 @@ class LumensRatesContainer extends React.PureComponent {
         }
         this.setState(newState)
       })
-      .catch(err => {
-        console.error(`Failed to fetch price: [${err}]`)
-        console.error(`stack: [${err.stack}]`)
+      .catch(error => {
+        console.error(`Failed to fetch price: [${error}]`)
+        console.error(`stack: [${error.stack}]`)
       })
   }
 
   render() {
-    if (!this.state) return null
+    if (!this.state) {
+return null
+}
     return <LumensRates {...this.state} />
   }
 }
 
 class LumensRates extends React.PureComponent {
-  isPositive(changeNumStr) {
-    const asFloat = Number.parseFloat(changeNumStr)
+  isPositive(changeNumberString) {
+    const asFloat = Number.parseFloat(changeNumberString)
     return Number.isNaN(asFloat) === false && Number(asFloat) >= 0
   }
 
   renderChange(change) {
     const positive = this.isPositive(change)
-    const valueStr = `${positive ? '+' : ''}${this.props.change}%`
+    const valueString = `${positive ? '+' : ''}${this.props.change}%`
     const style = {
       color: positive ? '#00c292' : '#fb9678',
     }
-    return <span style={style}>{valueStr}</span>
+    return <span style={style}>{valueString}</span>
   }
 
   render() {

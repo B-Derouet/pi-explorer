@@ -3,8 +3,8 @@ import Table from 'react-bootstrap/lib/Table'
 import {Link} from 'react-router-dom'
 import {FormattedTime, FormattedDate, FormattedMessage} from 'react-intl'
 
-import {withServer} from './shared/HOCs'
 import {isDefInt, shortHash} from '../lib/utils'
+import {withServer} from './shared/HOCs'
 import {withSpinner} from './shared/Spinner'
 
 class AccountRow extends React.Component {
@@ -99,8 +99,8 @@ class AccountTableContainer extends React.Component {
       .then(result => {
         this.setState({accounts: result.records.accounts, isLoading: false})
       })
-      .catch(err => {
-        console.error(`Failed to fetch Accounts: [${err}]`)
+      .catch(error => {
+        console.error(`Failed to fetch Accounts: [${error}]`)
         this.setState({accounts: [], isLoading: false})
       })
   }

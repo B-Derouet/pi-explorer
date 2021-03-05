@@ -3,7 +3,7 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Row from 'react-bootstrap/lib/Row'
 import {FormattedMessage} from 'react-intl'
 
-const knownErrors = ['network']
+const knownErrors = new Set(['network'])
 
 class Error extends React.Component {
   render() {
@@ -12,7 +12,7 @@ class Error extends React.Component {
       <Grid>
         <Row>
           <h3>
-            {id && knownErrors.indexOf(id) !== -1 ? (
+            {id && knownErrors.has(id) ? (
               <FormattedMessage id={`error.${id}`} />
             ) : (
               <FormattedMessage id="error.unknown" />

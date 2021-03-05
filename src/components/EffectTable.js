@@ -75,13 +75,19 @@ EffectTable.propTypes = {
   showAccount: PropTypes.bool,
 }
 
-const rspRecToPropsRec = record => mapKeys(record, (v, k) => camelCase(k))
+const rspRecToPropertiesRec = record => mapKeys(record, (v, k) => camelCase(k))
 
 const fetchRecords = ({account, limit, op, server, tx}) => {
   const builder = server.effects()
-  if (account) builder.forAccount(account)
-  if (op) builder.forOperation(op)
-  if (tx) builder.forTransaction(tx)
+  if (account) {
+builder.forAccount(account)
+}
+  if (op) {
+builder.forOperation(op)
+}
+  if (tx) {
+builder.forTransaction(tx)
+}
   builder.limit(limit)
   builder.order('desc')
   return builder.call()
@@ -89,12 +95,12 @@ const fetchRecords = ({account, limit, op, server, tx}) => {
 
 const enhance = compose(
   withPaging(),
-  withDataFetchingContainer(fetchRecords, rspRecToPropsRec),
-  withSpinner()
+  withDataFetchingContainer(fetchRecords, rspRecToPropertiesRec),
+  withSpinner(),
 )
 
 const ExportToCSVComponent = withDataFetchingAllContainer(fetchRecords)(
-  CSVExport
+  CSVExport,
 )
 
 export default enhance(EffectTable)

@@ -3,13 +3,13 @@ import {FormattedMessage} from 'react-intl'
 import AccountLink from '../shared/AccountLink'
 import Trust from './Trust'
 
-const AllowTrust = props => (
-  <Trust {...props}>
+const AllowTrust = properties => (
+  <Trust {...properties}>
     <FormattedMessage
       id="operation.trust.allow"
       values={{
-        authorize: String(props.authorize),
-        trustor: <AccountLink account={props.trustor} />,
+        authorize: String(properties.authorize),
+        trustor: <AccountLink account={properties.trustor} />,
       }}
     />
   </Trust>

@@ -16,16 +16,16 @@ import {default as Operation, opTypes} from './operations/Operation'
 import {filterFor} from './shared/OperationType'
 import CSVExport from './shared/CSVExport'
 
-const filterFn = event => {
+const filterFunction = event => {
   filterFor(event.target.value)
 }
 
-const OperationTable = props => (
+const OperationTable = properties => (
   <div>
-    {props.compact === false && (
+    {properties.compact === false && (
       <div className="filter">
         <FormattedMessage id="filter.for-operation-type" />:
-        <select onChange={filterFn} defaultValue={getOperationTypeFilter()}>
+        <select onChange={filterFunction} defaultValue={getOperationTypeFilter()}>
           <option />
           {opTypes.map(type => (
             <option key={type}>{type}</option>
@@ -51,12 +51,12 @@ const OperationTable = props => (
           <th>
             <FormattedMessage id="operation" />
           </th>
-          {props.compact === false && (
+          {properties.compact === false && (
             <th>
               <FormattedMessage id="transaction" />
             </th>
           )}
-          {props.compact === false && (
+          {properties.compact === false && (
             <th>
               <FormattedMessage id="type" />
             </th>
@@ -68,20 +68,20 @@ const OperationTable = props => (
         </tr>
       </thead>
       <tbody>
-        {props.records.map(op => (
+        {properties.records.map(op => (
           <Operation
             key={op.id}
-            compact={props.compact}
+            compact={properties.compact}
             op={op}
-            opURLFn={props.server.opURL}
-            parentRenderTimestamp={props.parentRenderTimestamp}
+            opURLFn={properties.server.opURL}
+            parentRenderTimestamp={properties.parentRenderTimestamp}
           />
         ))}
       </tbody>
     </Table>
-    {!props.noCSVExport && (
+    {!properties.noCSVExport && (
       <div className="text-center" id="csv-export">
-        <ExportToCSVComponent {...props} />
+        <ExportToCSVComponent {...properties} />
       </div>
     )}
   </div>
@@ -94,7 +94,7 @@ OperationTable.propTypes = {
   server: PropTypes.object.isRequired,
 }
 
-const rspRecToPropsRec = record => {
+const rspRecToPropertiesRec = record => {
   record.time = record.created_at
   return mapKeys(record, (v, k) => camelCase(k))
 }
@@ -102,8 +102,12 @@ const rspRecToPropsRec = record => {
 const fetchRecords = ({account, limit, server, tx, type}) => {
   const getBuilder = () => {
     const builder = server.operations()
-    if (tx) builder.forTransaction(tx)
-    if (account) builder.forAccount(account)
+    if (tx) {
+builder.forTransaction(tx)
+}
+    if (account) {
+builder.forAccount(account)
+}
     builder.limit(limit)
     builder.order('desc')
     return builder
@@ -119,14 +123,14 @@ const fetchRecords = ({account, limit, server, tx, type}) => {
       undefined,
       0,
       0,
-      0
+      0,
     )
   }
   return getBuilder().call()
 }
 
 const getOperationTypeFilter = () => {
-  const opTypeFilter = window.location.search.match(/opTypeFilter=([a-z_]*)/)
+  const opTypeFilter = window.location.search.match(/opTypeFilter=([_a-z]*)/)
   if (opTypeFilter && opTypeFilter[1]) {
     return opTypeFilter[1]
   }
@@ -140,7 +144,7 @@ const fetchUntilEnoughDataToDisplay = (
   limit,
   accumulatedRsp,
   totalFetchedRecs,
-  cursor
+  cursor,
 ) => {
   const builder = cursor ? getBuilder().cursor(cursor) : getBuilder()
 
@@ -173,7 +177,7 @@ const fetchUntilEnoughDataToDisplay = (
         limit,
         accumulatedRsp,
         totalFetchedRecs,
-        cursor
+        cursor,
       )
     } else {
       // there is no way for us to know how many occurrences exist for a
@@ -196,8 +200,10 @@ const fetchUntilEnoughDataToDisplay = (
       // the prev cursor stays the same, but the next cursor has to be set for the
       // latest rsp.next, so that if the user presses next the filtering would
       // continue from where we stopped last.
-      accumulatedRsp.next = (...props) => {
-        if (records.length === 0) return Promise.resolve(rsp)
+      accumulatedRsp.next = (...properties) => {
+        if (records.length === 0) {
+return Promise.resolve(rsp)
+}
 
         cursors.push(currentCursor)
         const newCursor = records[records.length - 1].paging_token
@@ -209,12 +215,14 @@ const fetchUntilEnoughDataToDisplay = (
           limit,
           undefined,
           0,
-          newCursor
+          newCursor,
         )
       }
 
-      accumulatedRsp.prev = (...props) => {
-        if (records.length === 0) return Promise.resolve(rsp)
+      accumulatedRsp.prev = (...properties) => {
+        if (records.length === 0) {
+return Promise.resolve(rsp)
+}
 
         let oldCursor = cursors.pop()
         return fetchUntilEnoughDataToDisplay(
@@ -223,7 +231,7 @@ const fetchUntilEnoughDataToDisplay = (
           limit,
           undefined,
           0,
-          oldCursor
+          oldCursor,
         )
       }
 
@@ -232,16 +240,16 @@ const fetchUntilEnoughDataToDisplay = (
   })
 }
 
-const callBuilder = props => props.server.operations()
+const callBuilder = properties => properties.server.operations()
 
 const ExportToCSVComponent = withDataFetchingAllContainer(fetchRecords)(
-  CSVExport
+  CSVExport,
 )
 
 const enhance = compose(
   withPaging(),
-  withDataFetchingContainer(fetchRecords, rspRecToPropsRec, callBuilder),
-  withSpinner()
+  withDataFetchingContainer(fetchRecords, rspRecToPropertiesRec, callBuilder),
+  withSpinner(),
 )
 
 export default enhance(OperationTable)

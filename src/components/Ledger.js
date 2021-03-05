@@ -14,7 +14,6 @@ import {
 } from 'react-intl'
 import has from 'lodash/has'
 
-import {stroopsToLumens} from '../lib/stellar/utils'
 import {handleFetchDataFailure, setTitle, shortHash} from '../lib/utils'
 import ClipboardCopy from './shared/ClipboardCopy'
 import {withServer} from './shared/HOCs'
@@ -61,7 +60,6 @@ const DetailRow = ({label, children}) => (
 class Ledger extends React.Component {
   render() {
     const {
-      baseInStroops,
       baseFee,
       baseReserve,
       feePool,
@@ -91,7 +89,7 @@ class Ledger extends React.Component {
                 <span className="secondary-heading">{seq}</span>
                 <ClipboardCopy text={String(seq)} />
               </span>,
-              urlFn(seq)
+              urlFn(seq),
             )}
           >
             <Col md={6}>
@@ -116,7 +114,12 @@ class Ledger extends React.Component {
                     {txCountFailed}
                   </DetailRow>
                   <DetailRow label="max.transactions">
-                    {maxTxSetSize} per ledger
+                  <FormattedMessage
+                    id="max.transactions.perLedger"
+                    values={{
+                      count: maxTxSetSize,
+                    }}
+                  />
                   </DetailRow>
                 </tbody>
               </Table>
@@ -125,19 +128,17 @@ class Ledger extends React.Component {
               <Table>
                 <tbody>
                   <DetailRow label="base.fee">
-                    <FormattedNumber value={baseFee} /> stroops
+                    <FormattedNumber value={baseFee} /> Test-π
                   </DetailRow>
                   <DetailRow label="base.reserve">
-                    {baseInStroops
-                      ? stroopsToLumens(baseReserve)
-                      : Number(baseReserve)}{' '}
-                    XLM
+                    {Number(baseReserve)}{' '}
+                    Test-π
                   </DetailRow>
                   <DetailRow label="fee.pool">
-                    <FormattedNumber value={feePool} /> XLM
+                    <FormattedNumber value={feePool} /> Test-π
                   </DetailRow>
                   <DetailRow label="total.coins">
-                    <FormattedNumber value={totalCoins} /> XLM
+                    <FormattedNumber value={totalCoins} /> Test-π
                   </DetailRow>
                   <DetailRow label="protocolVersion">{protocol}</DetailRow>
                 </tbody>
@@ -175,8 +176,8 @@ class LedgerContainer extends React.Component {
     this.loadLedger(this.props.match.params.id)
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.loadLedger(nextProps.match.params.id)
+  componentWillReceiveProps(nextProperties) {
+    this.loadLedger(nextProperties.match.params.id)
   }
 
   loadLedger(ledgerId) {
